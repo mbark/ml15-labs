@@ -1,6 +1,11 @@
 import monkdata as m
 import dtree as d
-import random
+import random as r
+import pyqtgraph as pg
+import numpy as np
+from pylab import *
+
+fractions = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 
 def assignment1():
 	print "   ", "Entropy"
@@ -48,7 +53,7 @@ def findBestTree(tree, compare, lastBest=0, lastBestTree=None):
 
 def partition(data, fraction):
 	ldata = list(data)
-	random.shuffle(ldata)
+	r.shuffle(ldata)
 	breakPoint = int(len(ldata) * fraction)
 
 	return ldata[:breakPoint], ldata[breakPoint:]
@@ -62,14 +67,35 @@ def bestTreeByFraction(dataset, compare, fraction):
 
 def valuesForFractions(dataset, compare):
 	vals = []
-	for fraction in [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]:
+	for fraction in fractions:
 		vals.append(bestTreeByFraction(dataset, compare, fraction))
 
 	return vals
 
+def formatFractionValues(vals):
+	res = ""
+	for v in vals:
+		res += "{:.5f}".format(v) + " "	
+
+	return res
+
 def assignment4():
-	print valuesForFractions(m.monk1, m.monk1test)
-	print valuesForFractions(m.monk3, m.monk3test)
+	x = fractions
+	y1 = valuesForFractions(m.monk1, m.monk1test)
+	y3 = valuesForFractions(m.monk3, m.monk3test)
+
+
+	print "   ", "    0.3", "    0.4", "    0.5", "    0.6", "    0.7", "    0.8"
+	print "M1 ", formatFractionValues(y1)
+	print "M3 ", formatFractionValues(y3)
+
+	plot(x, y1)
+	plot(x, y3)
+
+	xlabel('fraction')
+	ylabel('correctly classified')
+	grid(True)
+	show()
 
 assignment1()
 print
