@@ -1,5 +1,6 @@
 import monkdata as m
 import dtree as d
+import random
 
 def assignment1():
 	print "   ", "Entropy"
@@ -30,8 +31,50 @@ def assignment3():
 	print "M2 ", "{:.5f}".format(checkAndBuild(m.monk2, m.monk2)), "{:.5f}".format(checkAndBuild(m.monk2, m.monk2test))
 	print "M3 ", "{:.5f}".format(checkAndBuild(m.monk3, m.monk3)), "{:.5f}".format(checkAndBuild(m.monk3, m.monk3test))
 
+def findBestTree(tree, compare, lastBest=0, lastBestTree=None):
+	bestTree = lastBestTree
+	bestVal = lastBest
+
+	for p in d.allPruned(tree):
+		val = d.check(p, compare)
+		if val > bestVal:
+			bestTree = p
+			bestVal = val
+
+	if(bestVal > lastBest):
+		return findBestTree(bestTree, compare, bestVal, bestTree)
+	else:
+		return bestTree
+
+def partition(data, fraction):
+	ldata = list(data)
+	random.shuffle(ldata)
+	breakPoint = int(len(ldata) * fraction)
+
+	return ldata[:breakPoint], ldata[breakPoint:]
+
+def bestTreeByFraction(dataset, compare, fraction):
+	train, val = partition(dataset, fraction)
+	t = d.buildTree(train, m.attributes);
+	bt = findBestTree(t, val)
+
+	return d.check(bt, compare)
+
+def valuesForFractions(dataset, compare):
+	vals = []
+	for fraction in [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]:
+		vals.append(bestTreeByFraction(dataset, compare, fraction))
+
+	return vals
+
+def assignment4():
+	print valuesForFractions(m.monk1, m.monk1test)
+	print valuesForFractions(m.monk3, m.monk3test)
+
 assignment1()
 print
 assignment2()
 print
 assignment3()
+print
+assignment4()
