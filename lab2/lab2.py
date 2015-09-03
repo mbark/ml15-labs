@@ -1,6 +1,7 @@
 from cvxopt.solvers import qp
 from cvxopt.base import matrix
-import numpy, pylab, random, math
+from matplotlib import pylab
+import numpy, random, math
 
 def q(l):
 	return numpy.full(l, -1)
