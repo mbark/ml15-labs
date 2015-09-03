@@ -25,36 +25,35 @@ def t(data):
 
 	return x, t
 
-
 def P(x, t):
-	matrix = numpy.zeros(shape=(l, l))
-	for i in range(l):
-		for j in range(l):
+	N = len(x)
+	matrix = numpy.zeros(shape=(N, N))
+	for i in range(N):
+		for j in range(N):
 			matrix[i][j] = t[i] * t[j] * K(x[i], x[j])
 
 	return matrix
 
-def ind(x, y, a, t, data):
+def ind(point, a, t, data):
 	sum = 0
 	for i in range(len(data)):
-		sum += a[i] * t[i] * K([x,y], data[i])
-
+		sum += a[i] * t[i] * K(point, data[i])
 	return sum
 
-classA = [(random.normalvariate(-1.5, 1), random.normalvariate(0.5, 1), 1.0)
-	for i in range(5)] + \
-	[(random.normalvariate(1.5, 1), random.normalvariate(0.5, 1), 1.0)
-	for i in range(5)]
+def basically_zero(v):
+	t = 0.00001
+	return v >= -t and v <= t
 
-classB = [(random.normalvariate(0.0, 0.5), random.normalvariate(-0.5, 0.5), -1.0)
-	for i in range(10)]
+classA = [(random.normalvariate(-1.5, 1), random.normalvariate(0.5, 1), 1.0) for i in range(5)] + [(random.normalvariate(1.5, 1), random.normalvariate(0.5, 1), 1.0) for i in range(5)]
+classB = [(random.normalvariate(0.0, 0.5), random.normalvariate(-0.5, 0.5), -1.0) for i in range(10)]
 
 data = classA + classB
 random.shuffle(data)
 
-data, t = t(data)
-l = len(data)
-P = P(data, t)
+d = map(lambda d: d[:-1], data)
+t = map(lambda d: d[-1], data)
+l = len(d)
+P = P(d, t)
 q = q(l)
 G = G(l)
 h = h(l)
@@ -63,11 +62,13 @@ r = qp(matrix(P), matrix(q), matrix(G), matrix(h))
 alpha = list(r['x'])
 
 nonZeroA = []
-nonZeroX = []
+nonZeroP = []
+nonZeroT = []
 for i, a in enumerate(alpha):
-	if(a > 0.00001):
-		nonZeroA.append(a)
-		nonZeroX.append(data[i])
+	if(not basically_zero(a)):
+		nonZeroA.append(alpha[i])
+		nonZeroP.append(d[i])
+		nonZeroT.append(t[i])
 
 pylab.hold(True)
 pylab.plot([p[0] for p in classA],
@@ -80,7 +81,7 @@ pylab.plot([p[0] for p in classB],
 xrange = numpy.arange(-4, 4, 0.05)
 yrange = numpy.arange(-4, 4, 0.05)
 
-grid = matrix([[ind(x, y, alpha, t, data)
+grid = matrix([[ind([x, y], nonZeroA, nonZeroT, nonZeroP)
 	for y in yrange]
 	for x in xrange])
 
