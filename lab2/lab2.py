@@ -13,8 +13,12 @@ def G(l):
 	numpy.fill_diagonal(g, -1)
 	return g
 
-def K(x, y):
+def linearK(x, y):
 	return numpy.dot(x, y)+1
+
+def polynomialK(x, y):
+	K = linearK(x, y)
+	return K*K*K
 
 def t(data):
 	t = []
@@ -30,14 +34,14 @@ def P(x, t):
 	matrix = numpy.zeros(shape=(N, N))
 	for i in range(N):
 		for j in range(N):
-			matrix[i][j] = t[i] * t[j] * K(x[i], x[j])
+			matrix[i][j] = t[i] * t[j] * polynomialK(x[i], x[j])
 
 	return matrix
 
 def ind(point, a, t, data):
 	sum = 0
 	for i in range(len(data)):
-		sum += a[i] * t[i] * K(point, data[i])
+		sum += a[i] * t[i] * polynomialK(point, data[i])
 	return sum
 
 def basically_zero(v):
