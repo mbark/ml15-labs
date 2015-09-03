@@ -4,6 +4,7 @@ import random as r
 import pyqtgraph as pg
 import numpy as np
 from pylab import *
+import drawtree as draw
 
 fractions = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 
@@ -79,11 +80,20 @@ def formatFractionValues(vals):
 
 	return res
 
+def generateErrorTable(dataset, compare, tries):
+	acc = valuesForFractions(dataset, compare)
+	for i in range(tries-1):
+		vals = valuesForFractions(dataset, compare)
+		for j in range(len(vals)):
+			acc[j] = (acc[j] + vals[j]) / 2
+
+	return acc
+
+
 def assignment4():
 	x = fractions
-	y1 = valuesForFractions(m.monk1, m.monk1test)
-	y3 = valuesForFractions(m.monk3, m.monk3test)
-
+	y1 = generateErrorTable(m.monk1, m.monk1test, 100)
+	y3 = generateErrorTable(m.monk3, m.monk3test, 100)
 
 	print "   ", "    0.3", "    0.4", "    0.5", "    0.6", "    0.7", "    0.8"
 	print "M1 ", formatFractionValues(y1)
