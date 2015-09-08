@@ -17,9 +17,16 @@ def G(l):
 def linearK(x, y):
 	return numpy.dot(x, y)+1
 
-def polynomialK(x, y):
+def polynomialK(x, y, p=4):
 	K = linearK(x, y)
-	return K*K*K
+	return K**p
+
+def radialK(x, y, sigma=10):
+	N = numpy.linalg.norm(numpy.array(x) - numpy.array(y))
+	return math.exp((-1) * N*N /(2*sigma*sigma))
+
+def K(x, y):
+	return polynomialK(x, y)
 
 def t(data):
 	t = []
@@ -35,14 +42,14 @@ def P(x, t):
 	matrix = numpy.zeros(shape=(N, N))
 	for i in range(N):
 		for j in range(N):
-			matrix[i][j] = t[i] * t[j] * polynomialK(x[i], x[j])
+			matrix[i][j] = t[i] * t[j] * K(x[i], x[j])
 
 	return matrix
 
 def ind(point, nonZeroData):
 	sum = 0
 	for alpha, t, dataPoint in nonZeroData:
-		sum += alpha * t * polynomialK(point, dataPoint)
+		sum += alpha * t * K(point, dataPoint)
 	return sum
 
 def basically_zero(v):
