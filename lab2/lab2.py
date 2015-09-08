@@ -39,10 +39,10 @@ def P(x, t):
 
 	return matrix
 
-def ind(point, a, t, data):
+def ind(point, nonZeroData):
 	sum = 0
-	for i in range(len(data)):
-		sum += a[i] * t[i] * polynomialK(point, data[i])
+	for alpha, t, dataPoint in nonZeroData:
+		sum += alpha * t * polynomialK(point, dataPoint)
 	return sum
 
 def basically_zero(v):
@@ -66,14 +66,10 @@ h = h(l)
 r = qp(matrix(P), matrix(q), matrix(G), matrix(h))
 alpha = list(r['x'])
 
-nonZeroA = []
-nonZeroP = []
-nonZeroT = []
+nonZero = []
 for i, a in enumerate(alpha):
 	if(not basically_zero(a)):
-		nonZeroA.append(alpha[i])
-		nonZeroP.append(d[i])
-		nonZeroT.append(t[i])
+		nonZero.append((alpha[i], t[i], d[i]))
 
 pylab.hold(True)
 pylab.plot([p[0] for p in classA],
@@ -86,7 +82,7 @@ pylab.plot([p[0] for p in classB],
 xrange = numpy.arange(-4, 4, 0.05)
 yrange = numpy.arange(-4, 4, 0.05)
 
-grid = matrix([[ind([x, y], nonZeroA, nonZeroT, nonZeroP)
+grid = matrix([[ind([x, y], nonZero)
 	for y in yrange]
 	for x in xrange])
 

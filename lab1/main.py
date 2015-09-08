@@ -3,7 +3,7 @@ import dtree as d
 import random as r
 import pyqtgraph as pg
 import numpy as np
-from pylab import *
+import matplotlib.pylab as plt
 import drawtree as draw
 
 fractions = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
@@ -63,7 +63,6 @@ def bestTreeByFraction(dataset, compare, fraction):
 	train, val = partition(dataset, fraction)
 	t = d.buildTree(train, m.attributes);
 	bt = findBestTree(t, val)
-
 	return d.check(bt, compare)
 
 def valuesForFractions(dataset, compare):
@@ -99,13 +98,13 @@ def assignment4():
 	print "M1 ", formatFractionValues(y1)
 	print "M3 ", formatFractionValues(y3)
 
-	plot(x, y1)
-	plot(x, y3)
+	plt.plot(x, y1)
+	plt.plot(x, y3)
 
-	xlabel('fraction')
-	ylabel('correctly classified')
-	grid(True)
-	show()
+	plt.xlabel('fraction')
+	plt.ylabel('correctly classified')
+	plt.grid(True)
+	plt.show()
 
 assignment1()
 print
