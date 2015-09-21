@@ -16,7 +16,7 @@ for t=1:T
     class = class - 1;
     epsilon = 1.0-sum(w.*(class == data(:,end)));
 
-    alpha(t) = 1/(2*log((1-epsilon)/epsilon));
+    alpha(t) = 0.5 * log((1-epsilon)/epsilon);
     alph = (data(:,end) == class)*-1;
     w = w.*exp(alph.*alpha(t));
     w = w./sum(w);

@@ -11,9 +11,9 @@ for t=1:T
     class = class - 1;
     
     for c=1:C
-        tempC(:,c) = tempC(:,c) + alpha(t)*(class==classes(c));
+        tempC(:,c) = tempC(:,c) + alpha(t).*(class==classes(c));
     end
 end
 
 [dummy c] = max(tempC, [], 2);
-c=c-1;
+c=c - 1;
