@@ -16,7 +16,4 @@ for i=1:2
     end
 end
 
-mu
-sigma
-
 
